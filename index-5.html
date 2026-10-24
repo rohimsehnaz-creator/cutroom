@@ -1,0 +1,369 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Cutroom Courses</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one calm column system. Hero, filterable course grid, in-page course detail with a lesson timeline, then a simple enrol step. */
+:root{
+  --bg:#F4F6F8; --surface:#FFFFFF; --ink:#0E1A2B; --muted:#55627A; --line:#DDE3EA;
+  --accent:#0F766E; --accent-ink:#FFFFFF; --accent-soft:#DDF1EE;
+  --clip-a:#0F766E; --clip-b:#E4A23A; --clip-c:#3B5BA9; --track:#E9EDF2;
+  --font-display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+  --font-body:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C131D; --surface:#131C29; --ink:#E8EDF4; --muted:#98A5B8; --line:#243245;
+    --accent:#3CC3B1; --accent-ink:#04201C; --accent-soft:#14302E;
+    --clip-a:#3CC3B1; --clip-b:#E8B455; --clip-c:#7C9BE0; --track:#1A2636; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C131D; --surface:#131C29; --ink:#E8EDF4; --muted:#98A5B8; --line:#243245;
+  --accent:#3CC3B1; --accent-ink:#04201C; --accent-soft:#14302E;
+  --clip-a:#3CC3B1; --clip-b:#E8B455; --clip-c:#7C9BE0; --track:#1A2636; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+.wrap{max-width:1040px;margin:0 auto}
+h1,h2,h3{font-family:var(--font-display);line-height:1.12;margin:0;text-wrap:balance;letter-spacing:-.01em}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.label{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:20px}
+.brand{font-family:var(--font-display);font-weight:700;font-size:22px;text-decoration:none;display:flex;align-items:center;gap:10px}
+.brand i{display:inline-flex;gap:3px;align-items:flex-end;height:20px}
+.brand i b{width:5px;border-radius:1px;background:var(--accent)}
+.brand i b:nth-child(1){height:10px}.brand i b:nth-child(2){height:20px;background:var(--clip-b)}.brand i b:nth-child(3){height:14px;background:var(--clip-c)}
+.nav{display:flex;gap:20px;font-size:15px}
+.nav a{text-decoration:none;color:var(--muted)}
+.nav a:hover{color:var(--ink)}
+
+/* hero */
+.hero{padding-block:40px 36px;display:grid;gap:28px}
+.hero h1{font-size:clamp(34px,6vw,56px);font-weight:700;max-width:16ch}
+.hero p.lead{font-size:18px;color:var(--muted);max-width:52ch}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+.btn{font:inherit;font-weight:600;font-size:16px;padding:12px 20px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{filter:brightness(1.07)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--ink);filter:none}
+.facts{display:flex;flex-wrap:wrap;gap:12px 36px;padding-top:24px;border-top:1px solid var(--line)}
+.fact b{display:block;font-family:var(--font-display);font-size:26px}
+.fact span{font-size:14px;color:var(--muted)}
+
+/* catalog */
+section{padding-block:36px}
+.sec-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:16px;margin-bottom:24px}
+.sec-head h2{font-size:clamp(26px,4vw,34px)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-size:14px;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;text-align:left;font:inherit;color:inherit;cursor:pointer;padding:0;min-width:0}
+.card:hover{border-color:var(--accent)}
+.card-body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:10px;flex:1;min-width:0}
+.card h3{font-size:20px}
+.card p{color:var(--muted);font-size:15px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:auto;padding-top:6px;font-size:13px;color:var(--muted)}
+.meta .price{margin-left:auto;color:var(--ink);font-weight:600}
+.tag{align-self:flex-start;font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:var(--accent-soft);color:var(--accent)}
+
+/* timeline cover */
+.tl{background:var(--track);padding:14px 14px 12px;display:grid;gap:5px}
+.tl .row{display:flex;gap:3px;height:12px}
+.tl .row span{border-radius:2px;display:block;min-width:0}
+.tl .ruler{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-top:4px}
+.tl.big{padding:18px 18px 14px;border-radius:12px;border:1px solid var(--line)}
+.tl.big .row{height:16px}
+
+/* detail */
+.detail[hidden]{display:none!important}
+.back{font:inherit;background:none;border:0;color:var(--muted);cursor:pointer;padding:8px 0;margin-bottom:12px;font-size:15px}
+.back:hover{color:var(--ink)}
+.d-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:32px;align-items:start}
+.d-main{display:grid;gap:28px;min-width:0}
+.d-main h1{font-size:clamp(30px,5vw,44px)}
+.d-main .lead{font-size:18px;color:var(--muted);max-width:56ch}
+.learn{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.learn li{display:flex;gap:10px}
+.learn li::before{content:"";flex:none;width:8px;height:8px;margin-top:9px;border-radius:2px;background:var(--accent)}
+.lessons{margin:0;padding:0;list-style:none;border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+.lessons li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:baseline;padding:14px 18px;border-top:1px solid var(--line)}
+.lessons li:first-child{border-top:0}
+.lessons .tc{font-size:13px;color:var(--muted)}
+.lessons .dur{font-size:13px;color:var(--muted)}
+.side{position:sticky;top:16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;display:grid;gap:16px}
+.side .price{font-family:var(--font-display);font-size:34px;font-weight:700}
+.side dl{margin:0;display:grid;gap:8px;font-size:15px}
+.side dl div{display:flex;justify-content:space-between;gap:12px}
+.side dt{color:var(--muted)}.side dd{margin:0;font-weight:500;text-align:right}
+.side .btn{justify-content:center}
+
+/* steps + enrol */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:20px}
+.step{padding-top:16px;border-top:2px solid var(--ink);display:grid;gap:6px;align-content:start}
+.step h3{font-size:19px}.step p{color:var(--muted);font-size:15px}
+.enrol{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:clamp(20px,4vw,36px);display:grid;gap:20px}
+.enrol h2{font-size:clamp(26px,4vw,34px)}
+.enrol label{font-size:14px;color:var(--muted);display:block;margin-bottom:6px}
+.enrol select,.enrol .box{width:100%;font:inherit;padding:11px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.enrol .box{white-space:pre-wrap;font-family:var(--font-mono);font-size:14px;min-height:3.2em}
+.enrol-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px}
+.copied{font-size:14px;color:var(--accent);min-height:1.4em}
+footer{padding-block:32px 40px;border-top:1px solid var(--line);color:var(--muted);font-size:14px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
+
+@media (max-width:760px){
+  .d-grid{grid-template-columns:minmax(0,1fr)}
+  .side{position:static}
+  .nav{gap:14px}
+  .lessons li{grid-template-columns:minmax(0,1fr) auto}
+  .lessons .tc{display:none}
+}
+@media (prefers-reduced-motion:no-preference){
+  .card,.chip,.btn{transition:border-color .15s,background .15s,filter .15s}
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#top" data-home><i aria-hidden="true"><b></b><b></b><b></b></i>Cutroom</a>
+    <nav class="nav" aria-label="Main">
+      <a href="#courses" data-home>Courses</a>
+      <a href="#how" data-home>How it works</a>
+      <a href="#enrol" data-home>Get access</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div id="home">
+      <div class="hero">
+        <p class="label">Video editing courses</p>
+        <h1>Learn to edit, one clear lesson at a time.</h1>
+        <p class="lead">Short, practical courses on video editing, colour and sound. Pick a course, send one message, and get your access link.</p>
+        <div class="hero-actions">
+          <a class="btn" href="#courses" data-home>Browse courses</a>
+          <a class="btn ghost" href="#how" data-home>How it works</a>
+        </div>
+        <div class="facts">
+          <div class="fact"><b id="f-courses">6</b><span>courses</span></div>
+          <div class="fact"><b id="f-lessons">0</b><span>lessons</span></div>
+          <div class="fact"><b id="f-time">0h</b><span>of video</span></div>
+        </div>
+      </div>
+
+      <section id="courses" aria-labelledby="courses-h">
+        <div class="sec-head">
+          <h2 id="courses-h">Courses</h2>
+          <div class="chips" id="chips" role="group" aria-label="Filter by level"></div>
+        </div>
+        <div class="grid" id="grid"></div>
+      </section>
+
+      <section id="how" aria-labelledby="how-h">
+        <div class="sec-head"><h2 id="how-h">How it works</h2></div>
+        <div class="steps">
+          <div class="step"><h3>Choose a course</h3><p>Open any course to see every lesson, its length and what you will be able to do at the end.</p></div>
+          <div class="step"><h3>Send your request</h3><p>Copy the ready-made message below and send it to us. Payment details come back in the reply.</p></div>
+          <div class="step"><h3>Start learning</h3><p>You receive a private link to the lessons. Watch at your own pace and rewatch any time.</p></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="detail" id="detail" hidden></div>
+
+    <section id="enrol" aria-labelledby="enrol-h">
+      <div class="enrol">
+        <h2 id="enrol-h">Get access</h2>
+        <div class="enrol-row">
+          <div>
+            <label for="pick">Course</label>
+            <select id="pick"></select>
+          </div>
+          <div>
+            <label for="msg">Message to send</label>
+            <div class="box" id="msg" tabindex="0"></div>
+          </div>
+        </div>
+        <div class="hero-actions">
+          <button class="btn" id="copy" type="button">Copy message</button>
+          <span class="mono" style="align-self:center;font-size:14px;color:var(--muted)">Send to: <span id="contact">your-email@example.com</span></span>
+        </div>
+        <p class="copied" id="copied" role="status"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Cutroom Courses</span>
+    <span class="mono">Lessons run at 1080p, 24 fps</span>
+  </footer>
+</div>
+
+<script>
+/* ===== Edit this block to change your site ===== */
+var SITE = {
+  contact: "your-email@example.com",   // replace with your email or WhatsApp number
+  currency: "₹"                    // price symbol
+};
+var COURSES = [
+  { id:"editing-foundations", title:"Video Editing Foundations", level:"Beginner", tool:"Premiere Pro",
+    price:149, blurb:"Go from raw footage to a clean, finished video. Cuts, pacing, titles and export.",
+    lead:"Everything you need to cut your first complete video with confidence. No experience needed.",
+    learn:["Import, organise and cut footage quickly","Build a rhythm with J-cuts, L-cuts and b-roll","Add titles, transitions and music","Export for YouTube, Instagram and client delivery"],
+    lessons:[["Setting up your project",14],["The timeline and basic cuts",22],["Trimming with precision",18],["Pacing and rhythm",25],["B-roll and cutaways",20],["Titles and lower thirds",19],["Adding music",16],["Exporting your video",12]] },
+  { id:"short-form", title:"Short-Form Editing for Reels and Shorts", level:"Beginner", tool:"CapCut",
+    price:149, blurb:"Fast, vertical edits that hold attention in the first three seconds.",
+    lead:"Edit for 9:16 screens. Learn hooks, captions, beat-synced cuts and a repeatable weekly workflow.",
+    learn:["Set up 9:16 projects with safe areas","Write and place captions that people read","Cut to the beat of a track","Batch five videos in one session"],
+    lessons:[["Vertical video basics",11],["Hooks that stop the scroll",17],["Captions and text styles",21],["Cutting to the beat",18],["Speed ramps and zooms",15],["A weekly batch workflow",20]] },
+  { id:"sound-design", title:"Sound Design and Audio Cleanup", level:"Beginner", tool:"Audition",
+    price:149, blurb:"Remove noise, balance voices and add sound that makes a video feel finished.",
+    lead:"Good audio is half the video. Fix common recording problems and mix dialogue, music and effects.",
+    learn:["Remove hiss, hum and room echo","Balance dialogue against music","Add sound effects and ambience","Hit broadcast loudness targets"],
+    lessons:[["How to listen critically",13],["Noise reduction",24],["Fixing echo and hum",19],["EQ for clear voices",22],["Mixing music under speech",20],["Sound effects and ambience",18],["Loudness and delivery",14]] },
+  { id:"colour-grading", title:"Colour Grading Essentials", level:"Intermediate", tool:"DaVinci Resolve",
+    price:199, blurb:"Match shots, fix exposure and give your footage a consistent, deliberate look.",
+    lead:"Learn the scopes, the nodes and a simple method for grading any project from start to finish.",
+    learn:["Read waveform, parade and vectorscope","Balance exposure and white point","Match shots from different cameras","Build and save looks as presets"],
+    lessons:[["Resolve interface tour",16],["Scopes explained",26],["Primary correction",28],["Matching shots",24],["Skin tones",21],["Creating a look",27],["Exporting graded footage",13]] },
+  { id:"motion-graphics", title:"Motion Graphics Basics", level:"Intermediate", tool:"After Effects",
+    price:199, blurb:"Animate titles, logos and simple infographics that look polished and smooth.",
+    lead:"A practical introduction to keyframes, easing and shape layers, built around projects you can reuse.",
+    learn:["Animate with keyframes and easing","Build shape and text animations","Create a reusable logo sting","Bring animations into your edit"],
+    lessons:[["Compositions and layers",18],["Keyframes and easing",25],["Shape layers",22],["Animated titles",24],["Logo sting project",30],["Lower third template",23],["Rendering and handoff",12]] },
+  { id:"documentary", title:"Documentary and Long-Form Storytelling", level:"Advanced", tool:"Premiere Pro",
+    price:299, blurb:"Structure interviews, archive and b-roll into a story people stay with for 20 minutes or more.",
+    lead:"Work with hours of footage and shape it into a clear narrative with a beginning, middle and end.",
+    learn:["Log and organise large amounts of footage","Build a paper edit from interviews","Layer b-roll, archive and sound","Review and revise with a client"],
+    lessons:[["Planning the story",20],["Logging and selects",26],["The paper edit",28],["Cutting interviews",30],["Layering b-roll and archive",27],["Scene transitions",19],["Music and sound",22],["Client review and revisions",18],["Final delivery",14]] }
+];
+/* ===== End of editable block ===== */
+
+var LEVELS = ["All","Beginner","Intermediate","Advanced"];
+var state = { level:"All" };
+var $ = function(id){ return document.getElementById(id); };
+
+function mins(c){ return c.lessons.reduce(function(s,l){ return s+l[1]; },0); }
+function fmtTime(m){ var h=Math.floor(m/60), r=m%60; return h ? h+"h "+(r<10?"0":"")+r+"m" : r+"m"; }
+function tc(m){ var h=Math.floor(m/60), r=m%60; return (h<10?"0":"")+h+":"+(r<10?"0":"")+r+":00"; }
+function money(n){ return SITE.currency + n.toLocaleString("en-IN"); }
+function seeded(str){ var h=0; for(var i=0;i<str.length;i++){ h=(h*31+str.charCodeAt(i))>>>0; } return function(){ h=(h*1664525+1013904223)>>>0; return h/4294967296; }; }
+
+/* a small timeline graphic: one clip per lesson, width = lesson length */
+function timeline(c, big){
+  var rand = seeded(c.id), cols = ["var(--clip-a)","var(--clip-b)","var(--clip-c)"], rows = "";
+  var total = mins(c);
+  for(var r=0;r<2;r++){
+    var inner = "", left = r===0 ? 0 : 1 + Math.floor(rand()*3);
+    if(left){ inner += '<span style="flex:'+left+'"></span>'; }
+    c.lessons.forEach(function(l,i){
+      var col = cols[(i+r+Math.floor(rand()*2))%3];
+      inner += '<span style="flex:'+l[1]+';background:'+col+'"></span>';
+    });
+    rows += '<div class="row">'+inner+'</div>';
+  }
+  return '<div class="tl'+(big?' big':'')+'" aria-hidden="true">'+rows+'<div class="ruler"><span>00:00:00</span><span>'+tc(total)+'</span></div></div>';
+}
+
+function renderChips(){
+  $("chips").innerHTML = LEVELS.map(function(l){
+    return '<button class="chip" type="button" data-level="'+l+'" aria-pressed="'+(state.level===l)+'">'+l+'</button>';
+  }).join("");
+}
+function renderGrid(){
+  var list = COURSES.filter(function(c){ return state.level==="All" || c.level===state.level; });
+  $("grid").innerHTML = list.map(function(c){
+    return '<button class="card" type="button" data-id="'+c.id+'" aria-label="Open '+c.title+'">'
+      + timeline(c,false)
+      + '<div class="card-body"><span class="tag">'+c.level+'</span><h3>'+c.title+'</h3><p>'+c.blurb+'</p>'
+      + '<div class="meta mono"><span>'+c.lessons.length+' lessons</span><span>'+fmtTime(mins(c))+'</span><span class="price">'+money(c.price)+'</span></div></div></button>';
+  }).join("");
+}
+function renderDetail(c){
+  var start = 0;
+  var lessons = c.lessons.map(function(l,i){
+    var row = '<li><span class="tc mono">'+tc(start)+'</span><span>'+(i+1)+'. '+l[0]+'</span><span class="dur mono">'+l[1]+' min</span></li>';
+    start += l[1]; return row;
+  }).join("");
+  $("detail").innerHTML =
+    '<button class="back" type="button" id="back">← All courses</button>'
+  + '<div class="d-grid"><div class="d-main">'
+  +   '<div style="display:grid;gap:14px"><span class="tag">'+c.level+'</span><h1>'+c.title+'</h1><p class="lead">'+c.lead+'</p></div>'
+  +   timeline(c,true)
+  +   '<div style="display:grid;gap:14px"><h2 style="font-size:24px">What you will learn</h2><ul class="learn">'+c.learn.map(function(x){return '<li>'+x+'</li>';}).join("")+'</ul></div>'
+  +   '<div style="display:grid;gap:14px"><h2 style="font-size:24px">Lessons</h2><ol class="lessons">'+lessons+'</ol></div>'
+  + '</div>'
+  + '<aside class="side"><div class="price">'+money(c.price)+'</div>'
+  +   '<dl><div><dt>Level</dt><dd>'+c.level+'</dd></div><div><dt>Lessons</dt><dd>'+c.lessons.length+'</dd></div><div><dt>Total length</dt><dd class="mono">'+fmtTime(mins(c))+'</dd></div><div><dt>Software</dt><dd>'+c.tool+'</dd></div></dl>'
+  +   '<button class="btn" type="button" id="get" data-id="'+c.id+'">Get access</button></aside></div>';
+}
+
+function find(id){ return COURSES.filter(function(c){ return c.id===id; })[0]; }
+function showHome(scrollId){
+  $("detail").hidden = true; $("home").hidden = false;
+  try{ history.replaceState(null,"",location.pathname+location.search); }catch(e){}
+  var t = scrollId && $(scrollId); if(t){ t.scrollIntoView(); } else { window.scrollTo(0,0); }
+}
+function showCourse(id){
+  var c = find(id); if(!c){ return showHome(); }
+  renderDetail(c); $("home").hidden = true; $("detail").hidden = false;
+  $("pick").value = c.id; updateMsg();
+  try{ location.hash = "course-"+id; }catch(e){}
+  window.scrollTo(0,0);
+}
+
+function updateMsg(){
+  var c = find($("pick").value);
+  $("msg").textContent = "Hi, I would like access to “"+c.title+"” ("+money(c.price)+"). Please send payment details.";
+}
+function copyMsg(){
+  var text = $("msg").textContent, out = $("copied");
+  function done(){ out.textContent = "Message copied. Paste it into your email or chat."; }
+  function fallback(){
+    var r = document.createRange(); r.selectNodeContents($("msg"));
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+    out.textContent = "Message selected. Copy it with your device's copy command.";
+  }
+  try{ navigator.clipboard.writeText(text).then(done, fallback); }catch(e){ fallback(); }
+}
+
+/* events */
+document.addEventListener("click", function(e){
+  var chip = e.target.closest(".chip");
+  if(chip){ state.level = chip.getAttribute("data-level"); renderChips(); renderGrid(); return; }
+  var card = e.target.closest(".card");
+  if(card){ showCourse(card.getAttribute("data-id")); return; }
+  if(e.target.closest("#back")){ showHome("courses"); return; }
+  var get = e.target.closest("#get");
+  if(get){ $("pick").value = get.getAttribute("data-id"); updateMsg(); $("enrol").scrollIntoView(); return; }
+  var home = e.target.closest("[data-home]");
+  if(home){
+    var href = home.getAttribute("href");
+    if(!$("home").hidden){ return; }
+    e.preventDefault(); showHome(href==="#top" ? null : href.slice(1));
+  }
+});
+$("pick").addEventListener("change", updateMsg);
+$("copy").addEventListener("click", copyMsg);
+
+/* init */
+$("contact").textContent = SITE.contact;
+$("pick").innerHTML = COURSES.map(function(c){ return '<option value="'+c.id+'">'+c.title+'</option>'; }).join("");
+var totalLessons = 0, totalMin = 0;
+COURSES.forEach(function(c){ totalLessons += c.lessons.length; totalMin += mins(c); });
+$("f-courses").textContent = COURSES.length;
+$("f-lessons").textContent = totalLessons;
+$("f-time").textContent = Math.round(totalMin/60)+"h";
+renderChips(); renderGrid(); updateMsg();
+var h = (location.hash||"").replace("#","");
+if(h.indexOf("course-")===0){ showCourse(h.slice(7)); }
+</script>
+
+</body></html>
